@@ -1,0 +1,85 @@
+# CI checks for the AI Manager Platform.
+# Visibility-only — production deploys are managed by Vercel + Railway.
+#
+# Two parallel jobs run on PRs into main (gating merges via status checks)
+# and on pushes to main (green checkmark after merge). No secrets required:
+# tests must run fully offline.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  backend-check:
+    name: Backend (Python 3.12)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+
+      - name: Install backend dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Lint with ruff
+        # ruff is in [dev] extras; if missing, report but don't fail the build.
+        run: |
+          if command -v ruff >/dev/null 2>&1; then
+            ruff check app/
+          else
+            echo "::warning::ruff not installed — skipping lint step"
+          fi
+
+      - name: Syntax check (py_compile)
+        run: python -m py_compile $(find app -name "*.py")
+
+      - name: Run pytest
+        run: pytest -v
+
+  frontend-check:
+    name: Frontend (Node 20 + pnpm)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (tsc --noEmit)
+        run: pnpm typecheck
+
+      # Lint step intentionally omitted: eslint isn't installed yet, and
+      # next.config.js sets eslint.ignoreDuringBuilds: true. Add `pnpm lint`
+      # here once eslint is configured for the frontend workspace.
+
+      - name: Run tests
+        run: pnpm test

@@ -1,0 +1,16 @@
+# Explicit Nixpacks plan so Railway's mise-managed Python actually
+# installs our deps into the same interpreter that runs uvicorn.
+# Without this, the default auto-detection installs into a venv that
+# isn't activated for the start command, causing "No module named uvicorn".
+
+[phases.setup]
+nixPkgs = ["python312", "gcc"]
+
+[phases.install]
+cmds = [
+  "python -m pip install --upgrade pip",
+  "python -m pip install .",
+]
+
+[start]
+cmd = "python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"

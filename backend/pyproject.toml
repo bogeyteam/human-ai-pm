@@ -1,0 +1,78 @@
+[project]
+name = "ai-pm-backend"
+version = "0.1.0"
+description = "AI Manager Platform — backend (FastAPI)"
+requires-python = ">=3.12"
+dependencies = [
+    # Web
+    "fastapi>=0.115,<0.116",
+    "uvicorn[standard]>=0.32,<0.33",
+    "python-multipart>=0.0.12",
+    # Config
+    "pydantic>=2.9,<3",
+    "pydantic-settings>=2.6,<3",
+    # DB
+    "sqlalchemy[asyncio]>=2.0.36,<2.1",
+    "asyncpg>=0.30,<0.31",         # async driver — used by the FastAPI app
+    "psycopg2-binary>=2.9,<3",     # sync driver — used by Alembic only
+    "alembic>=1.14,<2",
+    "pgvector>=0.3.6,<0.4",
+    # Auth (verify Supabase JWTs locally — no extra round-trip)
+    "PyJWT[crypto]>=2.9,<3",
+    # HTTP
+    "httpx>=0.27,<0.28",
+    # LLM providers — using OpenAI-compatible SDK since Moonshot,
+    # Qwen (DashScope compat-mode), and Anthropic all support it
+    # (Anthropic via beta endpoint, but we'd use anthropic SDK
+    # for that one if we need it). Direct httpx is also fine.
+    "openai>=1.55,<2",
+    "anthropic>=0.40,<1",
+    # Scheduling (in-process cron for weekly optimizer — M7)
+    "apscheduler>=3.10,<4",
+    # Supabase Python client (storage uploads, admin ops)
+    "supabase>=2.9,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6",
+    "ruff>=0.8",
+    "mypy>=1.13",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "ASYNC"]
+ignore = ["E501"]  # line length handled by formatter
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency-injection markers are called in argument defaults by
+# design (def endpoint(db = Depends(get_db))). That's the idiomatic pattern,
+# not the B008 footgun, so treat them as immutable calls.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+    "fastapi.Header",
+    "fastapi.Cookie",
+    "fastapi.Form",
+    "fastapi.File",
+    "fastapi.Security",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["app/tests"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

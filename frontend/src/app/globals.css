@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────
+   Almanac — design tokens
+   Opt-in: scope visual behaviors via `.almanac` / `.almanac-paper`
+   so legacy pages stay on the neutral defaults.
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: light;
+
+  /* Paper / ink ground */
+  --paper:        oklch(0.975 0.008 80);
+  --paper-2:      oklch(0.955 0.012 78);
+  --paper-3:      oklch(0.93  0.014 76);
+  --paper-4:      oklch(0.90  0.014 74);
+
+  --ink:          oklch(0.22 0.014 60);
+  --ink-2:        oklch(0.42 0.012 60);
+  --ink-3:        oklch(0.58 0.010 60);
+  --ink-4:        oklch(0.74 0.008 65);
+
+  --rule:         oklch(0.86 0.008 70);
+  --rule-2:       oklch(0.78 0.010 65);
+  --rule-ink:     oklch(0.30 0.014 60);
+
+  /* Accent — clay (terracotta / iron oxide) */
+  --clay:         oklch(0.56 0.115 38);
+  --clay-deep:    oklch(0.42 0.10  38);
+  --clay-soft:    oklch(0.93 0.035 50);
+  --clay-ink:     oklch(0.32 0.10  38);
+
+  /* Semantic — muted, never primary */
+  --sage:         oklch(0.55 0.07 150);
+  --sage-soft:    oklch(0.93 0.03 145);
+  --sage-ink:     oklch(0.32 0.06 150);
+
+  --rust:         oklch(0.50 0.135 28);
+  --rust-soft:    oklch(0.94 0.04  30);
+  --rust-ink:     oklch(0.32 0.10  28);
+
+  --ochre:        oklch(0.62 0.11 78);
+  --ochre-soft:   oklch(0.94 0.05 80);
+  --ochre-ink:    oklch(0.36 0.08 78);
+
+  /* AI voice — quiet iris/indigo */
+  --ai:           oklch(0.42 0.08 275);
+  --ai-soft:      oklch(0.94 0.025 275);
+  --ai-rule:      oklch(0.72 0.05  275);
+
+  /* Type families.
+     `--font-plex-*` vars are injected by next/font in layout.tsx.
+     `--font-plex-sc` references the family loaded via the Google Fonts
+     <link> in layout.tsx (next/font/google doesn't yet export the SC face). */
+  --font-plex-sc: '"IBM Plex Sans SC"';
+
+  --font-sans:  var(--font-plex-sans), 'IBM Plex Sans', 'IBM Plex Sans SC', system-ui, sans-serif;
+  --font-sc:    var(--font-plex-sc),   'IBM Plex Sans SC', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-serif: var(--font-plex-serif), 'IBM Plex Serif', 'Noto Serif SC', Georgia, serif;
+  --font-mono:  var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Spacing — 4px base */
+  --sp-0: 0;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+
+  /* Radius — almanac is mostly sharp */
+  --r-0: 0;
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 6px;
+
+  /* Motion */
+  --t-swift:      120ms cubic-bezier(0.2, 0, 0, 1);
+  --t-standard:   220ms cubic-bezier(0.2, 0, 0, 1);
+  --t-expressive: 320ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Dark mode (B5) — class-based (`.dark` on <html>). Overrides only
+   the ground + ink + rule scales; the warm accents (clay/sage/ochre/
+   rust/ai) keep their hue but get slightly lifted soft/ink variants so
+   tinted surfaces stay legible on a dark ground. Light mode is the
+   default and untouched.
+   ────────────────────────────────────────────────────────────── */
+.dark {
+  color-scheme: dark;
+
+  --paper:        oklch(0.20 0.010 70);
+  --paper-2:      oklch(0.24 0.012 70);
+  --paper-3:      oklch(0.28 0.013 70);
+  --paper-4:      oklch(0.33 0.014 70);
+
+  --ink:          oklch(0.93 0.010 80);
+  --ink-2:        oklch(0.80 0.010 80);
+  --ink-3:        oklch(0.64 0.010 75);
+  --ink-4:        oklch(0.50 0.010 70);
+
+  --rule:         oklch(0.36 0.010 70);
+  --rule-2:       oklch(0.44 0.012 68);
+  --rule-ink:     oklch(0.70 0.012 75);
+
+  --clay:         oklch(0.66 0.115 40);
+  --clay-deep:    oklch(0.52 0.10  38);
+  --clay-soft:    oklch(0.32 0.055 45);
+  --clay-ink:     oklch(0.82 0.08  45);
+
+  --sage:         oklch(0.62 0.07 150);
+  --sage-soft:    oklch(0.30 0.04 148);
+  --sage-ink:     oklch(0.80 0.06 150);
+
+  --rust:         oklch(0.60 0.135 30);
+  --rust-soft:    oklch(0.32 0.06 30);
+  --rust-ink:     oklch(0.80 0.10 30);
+
+  --ochre:        oklch(0.70 0.11 80);
+  --ochre-soft:   oklch(0.32 0.05 80);
+  --ochre-ink:    oklch(0.84 0.08 80);
+
+  --ai:           oklch(0.72 0.08 275);
+  --ai-soft:      oklch(0.30 0.04 275);
+  --ai-rule:      oklch(0.55 0.06 275);
+}
+
+body {
+  font-feature-settings: "rlig" 1, "calt" 1;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Paper texture — 1% noise so surfaces don't read as Figma.
+   ────────────────────────────────────────────────────────────── */
+.almanac-paper {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(oklch(0.22 0.014 60 / 0.018) 1px, transparent 1px),
+    radial-gradient(oklch(0.22 0.014 60 / 0.012) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 1px;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Base resets — opt-in surface class. Anything inside `.almanac`
+   inherits the almanac type, ink color, and OT features.
+   ────────────────────────────────────────────────────────────── */
+.almanac {
+  font-family: var(--font-sans);
+  font-feature-settings: "kern", "liga", "tnum";
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+.almanac h1,
+.almanac h2,
+.almanac h3,
+.almanac h4 {
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+
+/* Tabular numerics for any element marked .num or [data-tabular] */
+.almanac .num,
+.almanac [data-tabular] {
+  font-feature-settings: "tnum", "lnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Bilingual pairing — CN gets structural weight, EN reads as gloss.
+   <span class="cn-en">中文 <span class="en">English</span></span>
+   ────────────────────────────────────────────────────────────── */
+.almanac .cn-en .en {
+  font-family: var(--font-sans);
+  color: var(--ink-2);
+  font-weight: 400;
+  margin-left: 0.18em;
+  letter-spacing: -0.005em;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   AI voice — italic serif. Used wherever the AI is speaking.
+   ────────────────────────────────────────────────────────────── */
+.almanac .ai-voice,
+.ai-voice {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Micro caps label — mono uppercase used for section labels.
+   Works inside `.almanac` scopes or standalone (the sidebar uses it
+   outside an `.almanac` wrapper so the legacy ink defaults apply).
+   ────────────────────────────────────────────────────────────── */
+.micro {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Hairline rules — 1px horizontals. `.rule` is the standard weight,
+   `.rule-ink` is the heavier weight used above hero titles.
+   ────────────────────────────────────────────────────────────── */
+.rule {
+  height: 1px;
+  background: var(--rule);
+}
+.rule-ink {
+  height: 1px;
+  background: var(--rule-ink);
+}

@@ -1,0 +1,61 @@
+# Env / secrets
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.turbo/
+.pnpm-store/
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Claude Code local
+.claude/
+
+# Logs / runtime
+*.log
+.uvicorn.log
+pids/
+*.pid
+
+# Alembic temp
+*.sqlite
+*.db
+
+# Supabase CLI local stack (if used later)
+supabase/.temp/
+supabase/.branches/
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/tests/e2e/screenshots/
+.vercel
